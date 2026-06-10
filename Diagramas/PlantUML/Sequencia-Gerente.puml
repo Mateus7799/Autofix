@@ -1,0 +1,70 @@
+@startuml "Diagrama de Sequência - Gerente (Visual Pro)"
+autonumber
+
+skinparam actorStyle awesome
+skinparam monochrome false
+skinparam shadowing true
+skinparam defaultFontName "Segoe UI"
+skinparam BoxPadding 25
+skinparam ParticipantPadding 20
+
+
+skinparam actor {
+    BackgroundColor #FFFBEB
+    BorderColor #D97706
+}
+skinparam ArrowColor #334155
+skinparam Note {
+    BackgroundColor #FEF3C7
+    BorderColor #F59E0B
+    FontColor #92400E
+}
+
+actor "Gerente" as ger
+
+box "Módulo de Acesso" #F8FAFC
+    participant "Autenticação & Usuários" as mod_auth #0EA5E9
+end box
+
+box "Módulo de Oficina" #FFFBEB
+    participant "Orçamentos & Serviços" as mod_os #F59E0B
+end box
+
+box "Módulo de Retaguarda" #FDF2F8
+    participant "Estoque & Faturamento" as mod_back #DB2777
+end box
+
+== Gestão de Recursos Humanos ==
+ger -> mod_auth : gerenciarUsuarios(acao, dadosFuncionario)
+activate mod_auth
+note over mod_auth: **Regra de Negócio:**\n- Validar Nível de Permissão\n- Encriptar nova senha
+mod_auth --> ger : usuariosAtualizados
+deactivate mod_auth
+
+== Controle de Inventário ==
+ger -> mod_back : gerenciarEstoque(acao, pecaId, qtd)
+activate mod_back
+alt #FEE2E2 Se estoque atual < estoque mínimo
+    mod_back --> ger : alertaEstoqueBaixo(Notificação)
+end
+mod_back --> ger : estoqueAtualizado
+deactivate mod_back
+
+== Faturamento e Fechamento ==
+ger -> mod_back : emitirNotaFiscal(numeroOS)
+activate mod_back
+
+mod_back -> mod_os : buscarDadosFaturamento(numeroOS)
+activate mod_os
+mod_os --> mod_back : dadosDaOS(valores e itens)
+deactivate mod_os
+
+mod_back --> ger : notaFiscalGerada (PDF/XML)
+deactivate mod_back
+
+ger -> mod_back : gerarRelatorios(tipo)
+activate mod_back
+mod_back --> ger : exibirRelatorioGerado
+deactivate mod_back
+
+@enduml

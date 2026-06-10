@@ -1,0 +1,61 @@
+@startuml "Sequência de Projeto - Solicitar Agendamento"
+autonumber
+skinparam actorStyle awesome
+
+actor "Cliente" as cli
+box "Camada de Apresentação (React)" #F8FAFC
+    participant "AgendamentoPage" as view
+end box
+
+box "Camada de Controle e Negócio (Spring Boot)" #F0FDF4
+    participant "AgendamentoController" as ctrl
+    participant "AgendamentoService" as svc
+    participant "AgendamentoRepository" as rep
+    entity "Agendamento" as entity
+end box
+
+box "Persistência" #EFF6FF
+    database "PostgreSQL" as db
+end box
+
+cli -> view : preencherDadosAgendamento(data, hora, descricao)
+activate view
+
+view -> ctrl : POST /api/agendamentos (JSON)
+activate ctrl
+
+ctrl -> svc : criarAgendamento(agendamentoDTO)
+activate svc
+
+' Inclusão obrigatória: Verificar Disponibilidade
+svc -> rep : verificarDisponibilidade(data, hora)
+activate rep
+rep -> db : SELECT COUNT(*) FROM tb_agendamentos...
+activate db
+db --> rep : resultadoQuery
+deactivate db
+rep --> svc : isDisponivel (true)
+deactivate rep
+
+create entity
+svc -> entity : new(agendamentoDTO)
+svc -> entity : setStatus("PENDENTE")
+
+svc -> rep : save(agendamento)
+activate rep
+rep -> db : INSERT INTO tb_agendamentos...
+activate db
+db --> rep : agendamentoPersistido
+deactivate db
+rep --> svc : agendamentoSalvo
+deactivate rep
+
+svc --> ctrl : agendamentoResponseDTO
+deactivate svc
+
+ctrl --> view : HTTP 201 Created (JSON)
+deactivate ctrl
+
+view --> cli : exibirMensagemSucesso()
+deactivate view
+@enduml

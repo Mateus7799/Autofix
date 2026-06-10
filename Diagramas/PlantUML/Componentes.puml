@@ -1,0 +1,69 @@
+@startuml
+skinparam componentStyle uml2
+left to right direction
+
+package "Frontend (React SPA)" {
+
+    component [UI Components\n(Páginas e Telas)] as ui
+    component [API Client\n(Axios / Services)] as client
+
+    ui ..> client : utiliza
+}
+
+package "Backend API (Spring Boot)" {
+
+    component [API REST\n(Controllers Layer)] as api
+
+    interface "REST/HTTP JSON" as rest
+    api - rest : <<provided>>
+
+    package "Domínio / Módulos de Negócio" {
+
+        component [Autenticação] as auth
+        component [Agendamentos] as agenda
+        component [Clientes e Veículos] as clientes
+        component [Orçamentos] as orc
+        component [Ordem de Serviço] as os
+        component [Estoque e Peças] as estoque
+        component [Financeiro] as financeiro
+
+        api ..> auth
+        api ..> agenda
+        api ..> clientes
+        api ..> orc
+        api ..> os
+        api ..> estoque
+        api ..> financeiro
+
+        agenda ..> clientes
+        orc ..> estoque : calcula peças
+        os ..> estoque : baixa estoque
+        financeiro ..> os : faturamento
+    }
+
+    component [Camada de Persistência] as persistencia
+}
+
+package "Persistência / ORM" {
+
+    component [Repositórios] as repo
+    component [JPA / Hibernate] as jpa
+}
+
+database "PostgreSQL DB" as db
+
+client ..> rest : HTTP/JSON
+
+auth ..> persistencia
+agenda ..> persistencia
+clientes ..> persistencia
+orc ..> persistencia
+os ..> persistencia
+estoque ..> persistencia
+financeiro ..> persistencia
+
+persistencia ..> repo
+repo ..> jpa
+jpa ..> db : JDBC
+
+@enduml

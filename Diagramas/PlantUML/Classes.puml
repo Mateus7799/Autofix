@@ -1,0 +1,109 @@
+@startuml "Diagrama de Classes Otimizado - Autofix"
+top to bottom direction
+skinparam classAttributeIconSize 0
+
+skinparam class {
+    BackgroundColor #F8FAFC
+    BorderColor #64748B
+    ArrowColor #475569
+}
+
+abstract class Usuario {
+    - Long id
+    - String nome
+    - String email
+    - String senha
+    + autenticar(senha: String): Boolean
+}
+
+class Cliente {
+    - String cpf
+    - String telefone
+}
+
+class Funcionario {
+    - String matricula
+    - Double salarioBase
+}
+
+class Mecanico {
+    - String especialidade
+}
+
+class Secretario {
+    - String turno
+}
+
+class Gerente {
+    - String nivelPermissao
+}
+
+class Veiculo {
+    - String placa
+    - String modelo
+    - String marca
+    - Integer ano
+}
+
+class Agendamento {
+    - Long id
+    - DateTime dataHora
+    - String descricaoProblema
+    - String status
+    + confirmar()
+    + cancelar()
+}
+
+class Orcamento {
+    - Long id
+    - Double valorTotal
+    - String status
+    - DateTime dataCriacao
+    + calcularMaoDeObra(horas: Integer, valorHora: Double)
+    + calcularValorTotal()
+}
+
+class OrdemServico {
+    - Long numeroOS
+    - String status
+    - DateTime dataAbertura
+    + alterarStatus(novoStatus: String)
+    + registrarConsumoPecas()
+}
+
+class ItemOrcamento {
+    - Integer quantidade
+    - Double precoUnitarioHistorico
+}
+
+class Peca {
+    - Long codigoPeca
+    - String nome
+    - Double precoVenda
+    - Integer estoqueAtual
+    + registrarEntrada(qtd: Integer)
+    + deduzirEstoque(qtd: Integer)
+}
+
+Usuario <|-- Cliente
+Usuario <|-- Funcionario
+Funcionario <|-- Mecanico
+Funcionario <|-- Secretario
+Funcionario <|-- Gerente
+
+
+Cliente "1" *-- "0..*" Veiculo : possui
+
+Veiculo "1" -- "0..*" Agendamento : vinculado a
+Secretario "1" -- "0..*" Agendamento : gerencia
+
+Cliente "1" -- "0..*" Orcamento : decide
+Mecanico "1" -- "0..*" Orcamento : gera
+
+Orcamento "1" -- "1" OrdemServico : origina
+Mecanico "1" -- "0..*" OrdemServico : executa
+
+Orcamento "1" *-- "1..*" ItemOrcamento
+ItemOrcamento "0..*" o-- "1" Peca
+
+@enduml

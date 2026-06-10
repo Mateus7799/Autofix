@@ -1,0 +1,60 @@
+@startuml "Comunicação Vertical - Solicitar Agendamento"
+
+
+skinparam shadowing false
+skinparam defaultFontName "Helvetica"
+skinparam monochrome false
+
+skinparam ParticipantPadding 40
+
+skinparam actor {
+    BackgroundColor #EFF6FF
+    BorderColor #3B82F6
+}
+skinparam participant {
+    BackgroundColor #F8FAFC
+    BorderColor #64748B
+}
+skinparam database {
+    BackgroundColor #FEF3C7
+    BorderColor #D97706
+}
+skinparam ArrowColor #475569
+
+actor "cli: Cliente" as cli
+participant "view: PortalCliente.jsx" as view
+participant "ctrl: AgendamentoController" as ctrl
+participant "svc: AgendamentoService" as svc
+participant "rep: AgendamentoRepository" as rep
+database "PostgreSQL" as db
+
+cli -> view : 1: preencherDadosAgendamento(dataHora, descricao)
+activate view
+
+view -> ctrl : 2: POST /api/agendamentos (JSON)
+activate ctrl
+
+ctrl -> svc : 3: criarAgendamento(dto)
+activate svc
+
+svc -> rep : 3.1: verificarDisponibilidade(dataHora)
+activate rep
+rep -> db : 3.2: SELECT COUNT(*)
+rep --> svc : 3.2: disponibilidade(false)
+deactivate rep
+
+svc -> rep : 3.3: save(agendamento)
+activate rep
+rep -> db : 3.4: INSERT INTO tb_agendamentos
+rep <-- svc : agendamentoPersistido
+deactivate rep
+
+svc <-- ctrl : agendamentoResponse
+deactivate svc
+
+ctrl <-- view : HTTP 201 Created
+deactivate ctrl
+
+view <-- cli : exibirSucesso
+deactivate view
+@enduml

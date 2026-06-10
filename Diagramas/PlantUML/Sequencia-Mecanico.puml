@@ -1,0 +1,57 @@
+@startuml "Diagrama de Sequência - Mecânico (Visual Pro)"
+autonumber
+
+skinparam actorStyle awesome
+skinparam monochrome false
+skinparam shadowing true
+skinparam defaultFontName "Segoe UI"
+skinparam BoxPadding 25
+skinparam ParticipantPadding 20
+
+skinparam actor {
+    BackgroundColor #F0FDF4
+    BorderColor #16A34A
+}
+skinparam ArrowColor #334155
+skinparam Note {
+    BackgroundColor #FEF3C7
+    BorderColor #F59E0B
+    FontColor #92400E
+}
+
+actor "Mecânico" as mec
+
+box "Módulo de Oficina" #FFFBEB
+    participant "Orçamentos & Serviços" as mod_os #F59E0B
+end box
+
+box "Módulo de Retaguarda" #FDF2F8
+    participant "Estoque & Faturamento" as mod_back #DB2777
+end box
+
+== Diagnóstico e Orçamentação ==
+mec -> mod_os : registrarDiagnostico(idVeiculo, relatoTecnico)
+activate mod_os
+mod_os --> mec : diagnosticoSalvo
+deactivate mod_os
+
+mec -> mod_os : gerarOrcamento(idVeiculo, listaPecas, horas)
+activate mod_os
+note over mod_os: **Cálculos do Sistema:**\n- Calcular Mão de Obra\n- Consultar Preço de Peças
+mod_os --> mec : orcamentoGerado
+deactivate mod_os
+
+== Execução do Serviço e Inventário ==
+mec -> mod_os : atualizarOrdemDeServico(numeroOS, novoStatus, pecasConsumidas)
+activate mod_os
+note over mod_os: **Mudança de Estado:**\nAltera O.S. para 'EM MANUTENÇÃO'
+
+mod_os -> mod_back : deduzirEstoque(pecasConsumidas)
+activate mod_back
+mod_back --> mod_os : confirmacaoBaixaEstoque
+deactivate mod_back
+
+mod_os --> mec : osAtualizada com Sucesso
+deactivate mod_os
+
+@enduml

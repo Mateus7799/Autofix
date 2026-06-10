@@ -1,0 +1,39 @@
+@startuml "Diagrama de Implantação Detalhado - MecaManage"
+left to right direction
+
+node "Dispositivo do Usuário" {
+
+    node "Navegador Web" {
+
+        artifact "Frontend\n(React SPA build)" as frontend
+    }
+}
+
+node "Servidor AWS EC2" {
+
+    node "Docker Engine" {
+
+        node "Container Backend (Spring Boot)" {
+
+            package "Camadas Internas da Aplicação" {
+
+                component "Controller Layer" as ctrl
+                component "Service Layer" as svc
+                component "Repository Layer" as repo
+
+                ctrl --> svc : requisição
+                svc --> repo : acesso dados
+            }
+        }
+    }
+}
+
+node "AWS RDS" {
+
+    database "PostgreSQL\n(db_mecamanage)" as db
+}
+
+frontend --> ctrl : HTTPS (443)
+repo --> db : JDBC (5432)
+
+@enduml

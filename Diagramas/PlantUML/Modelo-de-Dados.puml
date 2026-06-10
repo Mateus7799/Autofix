@@ -1,0 +1,134 @@
+@startuml "Diagrama Entidade-Relacionamento (DER) - MecaManage (Final)"
+
+skinparam monochrome false
+skinparam shadowing false
+skinparam defaultFontName "Helvetica"
+skinparam Linetype ortho
+
+skinparam class {
+    BackgroundColor #F8FAFC
+    BorderColor #64748B
+    HeaderBackgroundColor #1E3A8A
+    HeaderFontColor #FFFFFF
+    FontName "Courier"
+}
+
+entity "tb_usuario" as user {
+    * id : BIGINT <<PK>> [Generated]
+    --
+    * nome : VARCHAR(150)
+    * email : VARCHAR(100)
+    * senha : VARCHAR(255)
+}
+
+entity "tb_cliente" as cli {
+    * usuario_id : BIGINT <<PK, FK>>
+    --
+    * cpf : VARCHAR(14)
+    * telefone : VARCHAR(20)
+}
+
+entity "tb_funcionario" as func {
+    * usuario_id : BIGINT <<PK, FK>>
+    --
+    * matricula : VARCHAR(20)
+    * salario_base : DECIMAL(10,2)
+}
+
+entity "tb_mecanico" as mec {
+    * funcionario_id : BIGINT <<PK, FK>>
+    --
+    * especialidade : VARCHAR(50)
+}
+
+entity "tb_secretario" as sec {
+    * funcionario_id : BIGINT <<PK, FK>>
+    --
+    * turno : VARCHAR(30)
+}
+
+entity "tb_gerente" as ger {
+    * funcionario_id : BIGINT <<PK, FK>>
+    --
+    * nivel_permissao : VARCHAR(30)
+}
+
+entity "tb_veiculo" as vei {
+    * placa : VARCHAR(8) <<PK>>
+    --
+    * modelo : VARCHAR(50)
+    * marca : VARCHAR(30)
+    * ano : INTEGER
+    * cliente_id : BIGINT <<FK>>
+}
+
+entity "tb_agendamento" as agend {
+    * id : BIGINT <<PK>> [Generated]
+    --
+    * data_hora : TIMESTAMP
+    * descricao_problema : TEXT
+    * status : VARCHAR(30)
+    * veiculo_placa : VARCHAR(8) <<FK>>
+    * secretario_id : BIGINT <<FK>>
+}
+
+entity "tb_orcamento" as orc {
+    * id : BIGINT <<PK>> [Generated]
+    --
+    * valor_total : DECIMAL(10,2)
+    * status : VARCHAR(30)
+    * data_criacao : DATE
+    * cliente_id : BIGINT <<FK>>
+    * veiculo_placa : VARCHAR(8) <<FK>>
+    * mecanico_id : BIGINT <<FK>>
+}
+
+entity "tb_ordem_servico" as os {
+    * numero_os : BIGINT <<PK>>
+    --
+    * status : VARCHAR(30)
+    * data_abertura : TIMESTAMP
+    * orcamento_id : BIGINT <<FK>>
+}
+
+entity "tb_item_orcamento" as item {
+    * id : BIGINT <<PK>> [Generated]
+    --
+    * quantidade : INTEGER
+    * preco_unitario_historico : DECIMAL(10,2)
+    * orcamento_id : BIGINT <<FK>>
+    * peca_codigo : BIGINT <<FK>>
+}
+
+entity "tb_peca" as peca {
+    * codigo_peca : BIGINT <<PK>> [Generated]
+    --
+    * nome : VARCHAR(100)
+    * preco_venda : DECIMAL(10,2)
+    * estoque_atual : INTEGER
+}
+
+user ||--|| cli
+user ||--|| func
+func ||--|| mec
+func ||--|| sec
+func ||--|| ger
+
+
+cli ||--o{ vei : possui
+
+vei ||--o{ agend : agenda
+sec ||--o{ agend : gerencia
+
+cli ||--o{ orc : solicita
+vei ||--o{ orc : refere-se
+mec ||--o{ orc : gera
+
+orc ||--o| os : origina
+
+vei ||--o{ os : utiliza
+
+orc ||--o{ item : contém
+peca ||--o{ item : compõe
+
+@enduml

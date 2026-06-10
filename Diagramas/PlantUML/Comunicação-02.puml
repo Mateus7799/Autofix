@@ -1,0 +1,59 @@
+@startuml "Comunicação Vertical - Gerar Orçamento"
+
+
+skinparam shadowed false
+skinparam ParticipantPadding 40
+
+skinparam actor {
+    BackgroundColor #EFF6FF
+    BorderColor #3B82F6
+}
+skinparam participant {
+    BackgroundColor #F8FAFC
+    BorderColor #64748B
+}
+skinparam database {
+    BackgroundColor #FEF3C7
+    BorderColor #D97706
+}
+
+actor "mec: Mecânico" as mec
+participant "view: OrcamentoForm.jsx" as view
+participant "ctrl: OrcamentoController" as ctrl
+participant "svc: OrcamentoService" as svc
+participant "pecaRep: PecaRepository" as pecaRep
+participant "orcRep: OrcamentoRepository" as orcRep
+database "PostgreSQL" as db
+
+mec -> view : 1: adicionarItens(pecasIds, horas)
+activate view
+
+view -> ctrl : 2: POST /api/orcamentos (JSON)
+activate ctrl
+
+ctrl -> svc : 3: processarOrcamento(dto)
+activate svc
+
+loop [loop para cada peça]
+    svc -> pecaRep : 3.1: findById(codigoPeca)
+    activate pecaRep
+    pecaRep -> db : 3.2: SELECT * FROM tb_pecas
+    pecaRep <-- svc : pecaEntity
+    deactivate pecaRep
+end
+
+svc -> orcRep : 3.3: save(orcamento)
+activate orcRep
+orcRep -> db : 3.4: INSERT INTO tb_orcamentos
+orcRep <-- svc : orcamentoSalvo
+deactivate orcRep
+
+svc <-- ctrl : orcamentoResponse
+deactivate svc
+
+ctrl <-- view : HTTP 201 Created
+deactivate ctrl
+
+view <-- mec : mostrarConfirmacao
+deactivate view
+@enduml

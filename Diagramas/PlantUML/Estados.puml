@@ -1,0 +1,61 @@
+@startuml "Diagrama de Estados - Ordem de Serviço (Final)"
+
+skinparam shadowing false
+skinparam defaultFontName "Helvetica"
+skinparam monochrome false
+
+skinparam state {
+    BackgroundColor #F8FAFC
+    BorderColor #64748B
+    FontColor #1E293B
+    ArrowColor #475569
+}
+
+state "ORCAMENTO_APROVADO" as aprovado #E0F2FE
+state "EM_MANUTENCAO" as manutencao #FEF3C7
+state "EM_TESTE_QUALIDADE" as teste #F1F5F9
+state "CONCLUIDA" as concluida #DCFCE7
+state "CANCELADA" as cancelada #FEE2E2
+
+[*] --> aprovado : Cliente aprova orçamento / gerarNumeroOS()
+
+aprovado --> manutencao : Encaminhar veículo / vincularMecanico()
+
+state manutencao {
+
+    [*] --> Inicio
+
+    Inicio --> Execucao : iniciarReparo()
+
+    Execucao --> ConsumoPecas : registrarConsumo()
+    ConsumoPecas --> Execucao : adicionarPecas()
+
+    Execucao --> Finalizacao : finalizarReparo()
+
+    Finalizacao --> [*]
+}
+
+manutencao --> teste : solicitarTesteQualidade()
+
+state teste {
+
+    [*] --> Avaliacao
+
+    Avaliacao --> Reprovado : detectarFalha()
+    Avaliacao --> Aprovado : aprovadoNoTeste()
+
+    Reprovado --> [*]
+    Aprovado --> [*]
+}
+
+teste --> manutencao : reprovarTeste() / ajustarServico()
+teste --> concluida : aprovarTeste() / alterarStatus()
+
+concluida --> [*] : emitirNotaFiscal() / liberarVeiculo()
+
+aprovado --> cancelada : cancelarAntesExecucao()
+manutencao --> cancelada : falhaCritica()
+
+cancelada --> [*] : registrarEstorno()
+
+@enduml

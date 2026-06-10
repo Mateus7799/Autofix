@@ -1,0 +1,75 @@
+@startuml "Sequência de Projeto - Gerar Orçamento"
+autonumber
+skinparam actorStyle awesome
+
+actor "Mecânico" as mec
+box "Camada de Apresentação (React)" #F8FAFC
+    participant "OrcamentoFormPage" as view
+end box
+
+box "Camada de Controle e Negócio (Spring Boot)" #F0FDF4
+    participant "OrcamentoController" as ctrl
+    participant "OrcamentoService" as svc
+    participant "PecaRepository" as pecaRep
+    participant "OrcamentoRepository" as orcRep
+    entity "Orcamento" as entity
+end box
+
+box "Persistência" #EFF6FF
+    database "PostgreSQL" as db
+end box
+
+mec -> view : adicionarPecasEHoras(listaItens, horasTrabalhadas)
+activate view
+
+view -> ctrl : POST /api/orcamentos (JSON)
+activate ctrl
+
+ctrl -> svc : processarNovoOrcamento(orcamentoDTO)
+activate svc
+
+create entity
+svc -> entity : new()
+
+loop Para cada peça informada no DTO
+    svc -> pecaRep : findById(pecaId)
+    activate pecaRep
+    pecaRep -> db : SELECT * FROM tb_pecas WHERE...
+    activate db
+    db --> pecaRep : objetoPeca
+    deactivate db
+    pecaRep --> svc : pecaEncontrada
+    deactivate pecaRep
+    
+    svc -> entity : adicionarItem(peca, quantidade)
+    activate entity
+    deactivate entity
+end
+
+svc -> entity : calcularMaoDeObra(horasTrabalhadas, valorHoraBase)
+activate entity
+entity --> svc : valorMaoDeObra
+deactivate entity
+
+svc -> entity : calcularValorTotal()
+activate entity
+deactivate entity
+
+svc -> orcRep : save(orcamento)
+activate orcRep
+orcRep -> db : INSERT INTO tb_orcamentos / tb_itens...
+activate db
+db --> orcRep : orcamentoSalvo
+deactivate db
+orcRep --> svc : orcamentoPersistido
+deactivate orcRep
+
+svc --> ctrl : orcamentoSucessoDTO
+deactivate svc
+
+ctrl --> view : HTTP 201 Created (JSON)
+deactivate ctrl
+
+view --> mec : exibirConfirmacaoOrcamento()
+deactivate view
+@enduml

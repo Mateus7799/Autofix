@@ -1,0 +1,73 @@
+@startuml "Sequência de Projeto - Atualizar Ordem de Serviço"
+autonumber
+skinparam actorStyle awesome
+
+actor "Mecânico" as mec
+box "Camada de Apresentação (React)" #F8FAFC
+    participant "PainelMecanicoPage" as view
+end box
+
+box "Camada de Controle e Negócio (Spring Boot)" #F0FDF4
+    participant "OSController" as ctrl
+    participant "OSService" as svc
+    participant "OSRepository" as osRep
+    participant "EstoqueService" as estoqueSvc
+    entity "OrdemServico" as entity
+end box
+
+box "Persistência" #EFF6FF
+    database "PostgreSQL" as db
+end box
+
+mec -> view : informarConclusaoServico(osId, pecasUtilizadasList)
+activate view
+
+view -> ctrl : PUT /api/ordens-servico/{id}/finalizar (JSON)
+activate ctrl
+
+ctrl -> svc : finalizarOrdemServico(osId, pecasUtilizadasList)
+activate svc
+
+svc -> osRep : findById(osId)
+activate osRep
+osRep -> db : SELECT * FROM tb_ordens_servico...
+activate db
+db --> osRep : objetoOS
+deactivate db
+osRep --> svc : ordemServico
+deactivate osRep
+
+svc -> entity : atualizarStatus("CONCLUIDA")
+activate entity
+deactivate entity
+
+' Inclusão obrigatória: Registrar Consumo de Peças
+loop Para cada peça consumida na execução
+    svc -> estoqueSvc : deduzirItensEstoque(pecaId, quantidade)
+    activate estoqueSvc
+    estoqueSvc -> db : UPDATE tb_pecas SET estoque_atual = estoque_atual - QTD...
+    activate db
+    db --> estoqueSvc : estoqueAtualizado
+    deactivate db
+    estoqueSvc --> svc : confirmacaoBaixaEstoque
+    deactivate estoqueSvc
+end
+
+svc -> osRep : save(ordemServico)
+activate osRep
+osRep -> db : UPDATE tb_ordens_servico...
+activate db
+db --> osRep : osSalva
+deactivate db
+osRep --> svc : osPersistida
+deactivate osRep
+
+svc --> ctrl : osAtualizadaDTO
+deactivate svc
+
+ctrl --> view : HTTP 200 OK (JSON)
+deactivate ctrl
+
+view --> mec : atualizarTelaPainel()
+deactivate view
+@enduml

@@ -1,0 +1,65 @@
+@startuml "Comunicação Vertical - Atualizar Ordem de Serviço"
+
+
+skinparam shadowed false
+skinparam ParticipantPadding 40
+
+skinparam actor {
+    BackgroundColor #EFF6FF
+    BorderColor #3B82F6
+}
+skinparam participant {
+    BackgroundColor #F8FAFC
+    BorderColor #64748B
+}
+skinparam database {
+    BackgroundColor #FEF3C7
+    BorderColor #D97706
+}
+
+actor "mec: Mecânico" as mec
+participant "view: AgendaDashboard.jsx" as view
+participant "ctrl: OSController" as ctrl
+participant "svc: OSService" as svc
+participant "osRep: OSRepository" as osRep
+participant "pecaRep: PecaRepository" as pecaRep
+database "PostgreSQL" as db
+
+mec -> view : 1: finalizarServico(numeroOS, pecasConsumidas)
+activate view
+
+view -> ctrl : 2: PUT /api/ordens-servico/{id}/finalizar
+activate ctrl
+
+ctrl -> svc : 3: finalizarOS(numeroOS, pecasConsumidas)
+activate svc
+
+svc -> osRep : 3.1: findById(numeroOS)
+activate osRep
+osRep -> db : 3.2: SELECT * FROM tb_ordens_servico
+osRep <-- svc : osEntity
+deactivate osRep
+
+loop [loop para dedução de estoque]
+    svc -> pecaRep : 3.3: deduzirEstoque(codigoPeca, qtd)
+    activate pecaRep
+    pecaRep -> db : 3.4: UPDATE tb_pecas SET estoque_atual = ...
+    pecaRep <-- svc : ok
+    deactivate pecaRep
+end
+
+svc -> osRep : 3.5: save(os)
+activate osRep
+osRep -> db : 3.6: UPDATE tb_ordens_servico
+osRep <-- svc : osPersistida
+deactivate osRep
+
+svc <-- ctrl : osResponse
+deactivate svc
+
+ctrl <-- view : HTTP 200 OK
+deactivate ctrl
+
+view <-- mec : atualizarInterface
+deactivate view
+@enduml

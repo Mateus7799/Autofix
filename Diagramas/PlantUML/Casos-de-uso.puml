@@ -1,0 +1,63 @@
+@startuml
+left to right direction
+
+actor Cliente
+actor "Secretário" as Secretario
+actor Mecânico
+actor Gerente
+
+rectangle Sistema {
+
+    ' ===== CLIENTE =====
+    Cliente --> (Realizar Cadastro)
+    Cliente --> (Login)
+    Cliente --> (Solicitar Agendamento)
+    Cliente --> (Aprovar/Rejeitar Orçamento)
+    Cliente --> (Visualizar Histórico)
+
+    (Solicitar Agendamento) ..> (Verificar Disponibilidade) : <<include>>
+    (Solicitar Agendamento) ..> (Selecionar Veículo) : <<include>>
+
+    (Aprovar/Rejeitar Orçamento) ..> (Registrar Decisão) : <<include>>
+    (Registrar Decisão) ..> (Notificar Oficina) : <<include>>
+
+    ' ===== SECRETÁRIO =====
+    Secretario --> (Gerenciar Agenda)
+    Secretario --> (Cadastrar Cliente)
+    Secretario --> (Encaminhar Veículo)
+
+    (Gerenciar Agenda) ..> (Confirmar Agendamento) : <<include>>
+    (Gerenciar Agenda) <.. (Cancelar Agendamento) : <<extend>>
+    (Gerenciar Agenda) <.. (Remarcar Agendamento) : <<extend>>
+    
+
+    ' ===== MECÂNICO =====
+    Mecânico --> (Gerar Orçamento)
+    Mecânico --> (Registrar Diagnóstico)
+    Mecânico --> (Atualizar Ordem de Serviço)
+
+    (Gerar Orçamento) ..> (Calcular Mão de Obra) : <<include>>
+    (Gerar Orçamento) ..> (Consultar Preço de Peças) : <<include>>
+
+    (Atualizar Ordem de Serviço) ..> (Alterar Status) : <<include>>
+    (Atualizar Ordem de Serviço) ..> (Registrar Consumo de Peças) : <<include>>
+    (Atualizar Ordem de Serviço) <.. (Registrar Teste de Qualidade) : <<extend>>
+    
+
+    ' ===== GERENTE =====
+    Gerente --> (Gerenciar Usuários)
+    Gerente --> (Gerar Relatórios)
+    Gerente --> (Emitir Nota Fiscal)
+    Gerente --> (Gerenciar Estoque)
+
+    (Gerar Relatórios) ..> (Relatório Financeiro) : <<include>>
+    (Gerar Relatórios) ..> (Relatório de Serviços) : <<include>>
+
+    (Gerenciar Estoque) ..> (Registrar Entrada de Peças) : <<include>>
+    (Gerenciar Estoque) <.. (Alerta de Estoque Baixo) : <<extend>>
+    
+    (Gerenciar Usuários) ..> (Cadastrar Funcionário) : <<include>>
+    (Gerenciar Usuários) ..> (Definir Permissões) : <<include>>
+}
+
+@enduml

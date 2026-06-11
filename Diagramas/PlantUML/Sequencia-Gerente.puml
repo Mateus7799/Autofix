@@ -1,4 +1,4 @@
-@startuml "Diagrama de Sequência - Gerente (Visual Pro)"
+@startuml "Diagrama de Sequência - Gerente"
 autonumber
 
 skinparam actorStyle awesome

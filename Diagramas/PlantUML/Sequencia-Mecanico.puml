@@ -1,4 +1,4 @@
-@startuml "Diagrama de Sequência - Mecânico (Visual Pro)"
+@startuml "Diagrama de Sequência - Mecânico"
 autonumber
 
 skinparam actorStyle awesome

@@ -1,59 +1,33 @@
-@startuml "Comunicação Vertical - Gerar Orçamento"
+@startuml "Comunicação - Gerar Orçamento"
+skinparam shadowing false
+skinparam defaultFontName "Helvetica"
+skinparam monochrome false
+skinparam ObjectBackgroundColor #F8FAFC
+skinparam ObjectBorderColor #64748B
+skinparam DatabaseBackgroundColor #FEF3C7
+skinparam DatabaseBorderColor #D97706
+skinparam ActorBackgroundColor #EFF6FF
+skinparam ActorBorderColor #3B82F6
+skinparam ArrowColor #475569
 
-
-skinparam shadowed false
-skinparam ParticipantPadding 40
-
-skinparam actor {
-    BackgroundColor #EFF6FF
-    BorderColor #3B82F6
-}
-skinparam participant {
-    BackgroundColor #F8FAFC
-    BorderColor #64748B
-}
-skinparam database {
-    BackgroundColor #FEF3C7
-    BorderColor #D97706
-}
-
-actor "mec: Mecânico" as mec
-participant "view: OrcamentoForm.jsx" as view
-participant "ctrl: OrcamentoController" as ctrl
-participant "svc: OrcamentoService" as svc
-participant "pecaRep: PecaRepository" as pecaRep
+actor  "mec: Mecânico"               as mec
+participant "view: OrcamentoForm.jsx"     as view
+participant "ctrl: OrcamentoController"   as ctrl
+participant "svc: OrcamentoService"       as svc
+participant "pecaRep: PecaRepository"     as pecaRep
 participant "orcRep: OrcamentoRepository" as orcRep
-database "PostgreSQL" as db
+database "PostgreSQL"                as db
 
-mec -> view : 1: adicionarItens(pecasIds, horas)
-activate view
-
-view -> ctrl : 2: POST /api/orcamentos (JSON)
-activate ctrl
-
-ctrl -> svc : 3: processarOrcamento(dto)
-activate svc
-
-loop [loop para cada peça]
-    svc -> pecaRep : 3.1: findById(codigoPeca)
-    activate pecaRep
-    pecaRep -> db : 3.2: SELECT * FROM tb_pecas
-    pecaRep <-- svc : pecaEntity
-    deactivate pecaRep
-end
-
-svc -> orcRep : 3.3: save(orcamento)
-activate orcRep
-orcRep -> db : 3.4: INSERT INTO tb_orcamentos
-orcRep <-- svc : orcamentoSalvo
-deactivate orcRep
-
-svc <-- ctrl : orcamentoResponse
-deactivate svc
-
-ctrl <-- view : HTTP 201 Created
-deactivate ctrl
-
-view <-- mec : mostrarConfirmacao
-deactivate view
+mec     --> view    : 1: adicionarItens(pecasIds, horas)
+view    --> ctrl    : 2: POST /api/orcamentos (JSON)
+ctrl    --> svc     : 3: processarOrcamento(dto)
+svc     --> pecaRep : 3.1: [para cada peça] findById(codigoPeca)
+pecaRep --> db      : 3.2: SELECT * FROM tb_pecas
+pecaRep --> svc     : 3.3: pecaEntity
+svc     --> orcRep  : 3.4: save(orcamento)
+orcRep  --> db      : 3.5: INSERT INTO tb_orcamentos
+orcRep  --> svc     : 3.6: orcamentoSalvo
+svc     --> ctrl    : 3.7: orcamentoResponse
+ctrl    --> view    : 4: HTTP 201 Created
+view    --> mec     : 5: mostrarConfirmacao
 @enduml

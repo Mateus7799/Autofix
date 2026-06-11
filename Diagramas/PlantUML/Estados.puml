@@ -1,4 +1,4 @@
-@startuml "Diagrama de Estados - Ordem de Serviço (Final)"
+@startuml "Diagrama de Estados - Ordem de Serviço "
 
 skinparam shadowing false
 skinparam defaultFontName "Helvetica"

@@ -1,4 +1,4 @@
-@startuml "Diagrama de Implantação Detalhado - MecaManage"
+@startuml "Diagrama de Implantação Detalhado - Autoflix"
 left to right direction
 
 node "Dispositivo do Usuário" {

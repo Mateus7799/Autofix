@@ -112,13 +112,27 @@ O sistema segue o padrão **MVC (Model-View-Controller)**:
 
 ## 📊 Exemplos de Diagramas
 
-- Diagrama de Arquitetura  
-- Modelo C4  
-- Diagramas de Sequência / Comunicação  
-- DER (Modelo de Dados)  
-- Diagrama de Estados  
+### 🧭 C4 - Nível 1 (Contexto)
+
+Mostra a visão macro do sistema, destacando os atores externos e a interação com o Autofix.
+
+![C4 Contexto](Diagramas/Imagens/Arquitetura-C4-Nivel1.png)
 
 ---
+
+### 🏗️ C4 - Nível 2 (Contêiner)
+
+Detalha os principais componentes internos do sistema, incluindo frontend, backend e banco de dados.
+
+![C4 Container](Diagramas/Imagens/Arquitetura-C4-Nivel2.png)
+
+---
+
+### 🗄️ Modelo de Dados (DER)
+
+Representa a estrutura relacional do banco de dados, incluindo entidades, relacionamentos e heranças.
+
+![DER Banco de Dados](Diagramas/Imagens/Modelo-de-Dados.png)
 
 ## 🔧 Instalação e Execução
 

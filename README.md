@@ -1,47 +1,309 @@
-# 🛠️ Autofix - Sistema de Gestão de Oficinas Mecânicas
+# 🛠️ Autofix - Gestão Inteligente de Oficinas 👨‍💻
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=spring&logoColor=white" alt="Spring Boot" />
-  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
-  <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
-  <img src="https://img.shields.io/badge/Hibernate%20%2F%20JPA-59666C?style=for-the-badge&logo=hibernate&logoColor=white" alt="Hibernate" />
-</p>
-
-## 📋 Sobre o Projeto
-
-O **Autofix** é uma plataforma computacional desenvolvida como parte da disciplina de **Projeto de Software** na **PUC Minas**. O sistema foi projetado para automatizar e otimizar toda a esteira operacional e administrativa de uma oficina mecânica, cobrindo desde a jornada inicial do cliente até a retaguarda fiscal e de inventário.
-
-### 🌟 Principais Funcionalidades
-
-- **Módulo de Acesso:** Controle de perfis (Clientes, Secretários, Mecânicos e Gerentes) com autenticação segura via JWT.
-- **Módulo de Atendimento:** Auto-cadastro de veículos por clientes e solicitação de agendamentos online triados pela recepção.
-- **Módulo de Oficina:** Registro detalhado de diagnósticos, cálculo automatizado de orçamentos (horas trabalhadas + peças) e controle fino do ciclo de vida das Ordens de Serviço (O.S.).
-- **Módulo de Retaguarda:** Atualização automatizada de estoque (baixa física de insumos na conclusão de serviços) e simulação de faturamento.
+> Sistema integrado de automação operacional para oficinas mecânicas.  
+> Foco na eliminação de gargalos na triagem, agendamento ágil e controle do ciclo de vida de Ordens de Serviço e estoques.
 
 ---
 
-## 🏗️ Arquitetura e Tecnologias
-
-O sistema adota uma arquitetura cliente-servidor com separação clara de responsabilidades:
-
-- **Frontend:** SPA desenvolvida em **React** (utilizando componentes modernos e design responsivo).
-- **Backend:** API RESTful robusta construída em **Java com Spring Boot**, estruturada em camadas (*Controller*, *Service*, *Repository*).
-- **Persistência & ORM:** Banco de dados relacional **PostgreSQL**, utilizando **Hibernate/JPA** com estratégia de herança `JOINED` para mapeamento polimórfico de usuários.
+## 🚧 Status do Projeto
+📌 Projeto acadêmico em desenvolvimento (PUC Minas)
 
 ---
 
-## 🚀 Como Executar o Projeto
+## 📚 Índice
 
-### Pró-requisitos
-Antes de começar, você vai precisar ter instalado em sua máquina:
-- [JDK 17](https://www.oracle.com/java/technologies/downloads/) ou superior.
-- [Node.js](https://nodejs.org/) (versão LTS).
-- [PostgreSQL](https://www.postgresql.org/) ativo na porta padrão (`5432`).
-- [Maven](https://maven.apache.org/) para gerenciamento de dependências Java.
+- [🔗 Links Úteis](#-links-úteis)
+- [📝 Sobre o Projeto](#-sobre-o-projeto)
+- [✨ Funcionalidades Principais](#-funcionalidades-principais)
+- [🛠 Tecnologias Utilizadas](#-tecnologias-utilizadas)
+- [🏗 Arquitetura](#-arquitetura)
+- [📊 Exemplos de Diagramas](#-exemplos-de-diagramas)
+- [🔧 Instalação e Execução](#-instalação-e-execução)
+- [🔑 Variáveis de Ambiente](#-variáveis-de-ambiente)
+- [📦 Instalação de Dependências](#-instalação-de-dependências)
+- [💾 Banco de Dados](#-banco-de-dados)
+- [⚡ Execução](#-execução)
+- [🐳 Docker](#-docker)
+- [🚀 Deploy](#-deploy)
+- [📂 Estrutura de Pastas](#-estrutura-de-pastas)
+- [🎥 Demonstração](#-demonstração)
+- [🧪 Testes](#-testes)
+- [📚 Documentações](#-documentações)
+- [👥 Autores](#-autores)
+- [🤝 Contribuição](#-contribuição)
+- [🙏 Agradecimentos](#-agradecimentos)
+- [⚖️ Licença](#-licença)
 
-### 1. Configuração do Banco de Dados
-Crie um banco de dados vazio no PostgreSQL chamado `autofix`. No arquivo do backend (`src/main/resources/application.properties`), ajuste as credenciais de acesso se necessário:
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/autofix
-spring.datasource.username=seu_usuario
-spring.datasource.password=sua_senha
+---
+
+## 🔗 Links Úteis
+
+- 🌐 Demo Online: Acesse a Aplicação Web Autofix  
+- 📖 Documentação da API: Swagger  
+
+---
+
+## 📝 Sobre o Projeto
+
+O Autofix foi idealizado para resolver problemas reais do fluxo operacional de oficinas mecânicas:
+
+- Falta de sincronização entre setores  
+- Retrabalho operacional  
+- Erros de estoque  
+- Atrasos no atendimento  
+
+### 👥 Atores
+
+- Cliente  
+- Secretário  
+- Mecânico  
+- Gerente  
+
+Projeto desenvolvido na **PUC Minas**.
+
+---
+
+## ✨ Funcionalidades Principais
+
+- 🔐 Autenticação com JWT  
+- 🗓️ Agendamento online  
+- 🛠️ Gestão de O.S. e orçamentos  
+- 📦 Controle automático de estoque  
+- 📊 Alertas de estoque mínimo  
+
+---
+
+## 🛠 Tecnologias Utilizadas
+
+### 💻 Front-end
+- React  
+- TypeScript  
+- Tailwind CSS  
+- Vite  
+
+### 🖥️ Back-end
+- Java 17  
+- Spring Boot  
+- JPA / Hibernate  
+- PostgreSQL  
+- JWT  
+
+### ⚙️ Infraestrutura
+- Docker  
+- Docker Compose  
+- Vercel  
+
+---
+
+## 🏗 Arquitetura
+
+O sistema segue o padrão **MVC (Model-View-Controller)**:
+
+- Controller → recebe requisições  
+- Service → regras de negócio  
+- Repository → acesso ao banco  
+
+### 🧬 Modelagem
+
+- Herança com estratégia **JOINED**  
+- Normalização de dados  
+
+---
+
+## 📊 Exemplos de Diagramas
+
+- Diagrama de Arquitetura  
+- Modelo C4  
+- Diagramas de Sequência / Comunicação  
+- DER (Modelo de Dados)  
+- Diagrama de Estados  
+
+---
+
+## 🔧 Instalação e Execução
+
+### ✅ Pré-requisitos
+
+- Java 17+  
+- Node.js 18+  
+- Docker  
+
+---
+
+## 🔑 Variáveis de Ambiente
+
+### Back-end
+
+```env
+SERVER_PORT=8080
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/autofix
+SPRING_DATASOURCE_USERNAME=postgres
+SPRING_DATASOURCE_PASSWORD=senha-segura-123
+```
+
+### Front-end
+
+```env
+VITE_API_URL=http://localhost:8080/api
+```
+
+---
+
+## 📦 Instalação de Dependências
+
+```bash
+git clone https://github.com/seu-usuario/autofix.git
+cd autofix
+```
+
+### Front-end
+
+```bash
+cd frontend
+npm install
+cd ..
+```
+
+### Back-end
+
+```bash
+cd backend
+./mvnw clean install
+cd ..
+```
+
+---
+
+## 💾 Banco de Dados
+
+```bash
+docker run --name autofix_db \
+-e POSTGRES_USER=postgres \
+-e POSTGRES_PASSWORD=senha-segura-123 \
+-e POSTGRES_DB=autofix \
+-p 5432:5432 -d postgres:16
+```
+
+> ✅ As tabelas são criadas automaticamente via Hibernate (`ddl-auto: update`)
+
+---
+
+## ⚡ Execução
+
+### Terminal 1 – Back-end
+
+```bash
+cd backend
+./mvnw spring-boot:run
+```
+
+➡️ http://localhost:8080
+
+### Terminal 2 – Front-end
+
+```bash
+cd frontend
+npm run dev
+```
+
+➡️ http://localhost:5173
+
+---
+
+## 🐳 Docker
+
+```bash
+docker-compose up --build -d
+```
+
+Para parar:
+
+```bash
+docker-compose down
+```
+
+---
+
+## 🚀 Deploy
+
+```bash
+cd frontend && npm run build
+cd ..
+cd backend && ./mvnw clean package
+cd ..
+```
+
+---
+
+## 📂 Estrutura de Pastas
+
+```
+.
+├── docker-compose.yml
+├── README.md
+├── frontend
+│   ├── src
+│   └── public
+└── backend
+    ├── controller
+    ├── service
+    ├── repository
+    ├── model
+    └── dto
+```
+
+---
+
+## 🎥 Demonstração
+
+- Painel do Mecânico  
+- Controle de Ordens de Serviço  
+
+---
+
+## 🧪 Testes
+
+```bash
+cd backend
+./mvnw test
+```
+
+- Testes unitários (Mockito)  
+- Testes de integração (JPA)  
+
+---
+
+## 📚 Documentações
+
+- Spring Boot  
+- React  
+- Hibernate  
+- PostgreSQL  
+
+---
+
+## 👥 Autores
+
+- Mateus Azevedo Araújo  
+
+---
+
+## 🤝 Contribuição
+
+1. Fork do projeto  
+2. Criar branch (`git checkout -b feature/nome`)  
+3. Commit (`git commit -m 'feat: nova funcionalidade'`)  
+4. Push (`git push origin feature/nome`)  
+5. Abrir Pull Request  
+
+---
+
+## 🙏 Agradecimentos
+
+Ao Prof. Dr. João Paulo Aramuni pelo suporte acadêmico.
+
+---
+
+## ⚖️ Licença
+
+MIT

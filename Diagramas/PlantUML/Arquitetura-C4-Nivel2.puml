@@ -1,0 +1,27 @@
+@startuml "C4_Nivel_2_Conteiner_Autofix"
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+skinparam defaultFontName "Segoe UI"
+
+Person(cliente, "Cliente", "Dono do veículo.")
+Person(funcionario, "Funcionário", "Secretário, Mecânico ou Gerente da oficina.")
+
+' ===== LIMITE DO SISTEMA AUTOFIX =====
+System_Boundary(autofix_boundary, "Sistema Autofix") {
+    
+    Container(spa, "Aplicação Web SPA", "React, Vite, Tailwind CSS", "Apresenta a interface responsiva da oficina aos usuários. Consome recursos da API REST backend.")
+    
+    Container(api, "API RESTful (Backend)", "Java 17, Spring Boot, JPA/Hibernate", "Fornece toda a inteligência e lógica de negócio da oficina (Acesso, Atendimento, Oficina e Retaguarda).")
+    
+    ContainerDb(database, "Banco de Dados", "PostgreSQL 16", "Persiste dados estruturados de usuários, veículos, agendamentos, orçamentos, O.S., estoque e faturamento.")
+}
+
+Rel(cliente, spa, "Utiliza", "HTTPS")
+Rel(funcionario, spa, "Utiliza", "HTTPS")
+
+' Comunicação entre os contêineres do sistema
+Rel(spa, api, "Faz chamadas de API", "JSON / HTTPS (Bearer JWT)")
+Rel(api, database, "Lê e escreve dados", "JDBC / Hikari Connection Pool")
+
+@endl

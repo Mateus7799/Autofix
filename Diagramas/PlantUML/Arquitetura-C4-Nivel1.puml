@@ -1,0 +1,20 @@
+@startuml "C4_Nivel_1_Contexto_Autofix"
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+skinparam defaultFontName "Segoe UI"
+
+
+Person(cliente, "Cliente", "Dono do veículo. Solicita agendamentos, acompanha reparos e aprova orçamentos pelo portal web.")
+Person(secretario, "Secretário", "Atendente da recepção. Realiza triagem, check-in e encaminha veículos para o pátio técnico.")
+Person(mecanico, "Mecânico", "Operador técnico da oficina. Registra diagnósticos, compõe orçamentos e executa manutenções.")
+Person(gerente, "Gerente", "Administrador da oficina. Gerencia pessoal, monitora inventário, visualiza relatórios e emite NFe.")
+
+System(autofix, "Sistema Autofix", "Plataforma centralizada de automação logística e financeira de oficinas mecânicas. Gerencia agendamentos, orçamentos, O.S. e estoques.")
+
+Rel(cliente, autofix, "Agenda serviços e aprova orçamentos", "HTTPS / JSON")
+Rel(secretario, autofix, "Gerencia a agenda de atendimento e triagens", "HTTPS / JSON")
+Rel(mecanico, autofix, "Imputa diagnósticos, cria orçamentos e atualiza O.S.", "HTTPS / JSON")
+Rel(gerente, autofix, "Acompanha faturamento, gerencia estoque e emite notas fiscais", "HTTPS / JSON")
+
+@enduml

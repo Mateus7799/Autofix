@@ -253,17 +253,52 @@ cd ..
 
 ```
 .
-├── docker-compose.yml
-├── README.md
-├── frontend
-│   ├── src
-│   └── public
-└── backend
-    ├── controller
-    ├── service
-    ├── repository
-    ├── model
-    └── dto
+├── .gitignore                  # 🧹 Arquivos e pastas ignorados
+├── README.md                  # 📘 Documentação principal do projeto
+├── docker-compose.yml         # 🐳 Orquestração (frontend + backend + banco)
+│
+├── /Diagramas                 # 📊 Diagramas do sistema
+│   └── /Imagens
+│       ├── Arquitetura-C4-Nivel1.png   # 🧭 C4 - Contexto
+│       ├── Arquitetura-C4-Nivel2.png   # 🏗️ C4 - Contêiner
+│       └── Modelo-de-Dados.png         # 🗄️ DER
+│
+├── /frontend                  # 💻 Aplicação React (Interface do usuário)
+│   ├── /public                # 📂 Arquivos estáticos
+│   ├── /src                   # 📂 Código-fonte React
+│   │   ├── /components        # 🧱 Componentes reutilizáveis
+│   │   ├── /pages             # 📄 Páginas da aplicação
+│   │   ├── /services          # 🔌 Integração com API
+│   │   ├── /hooks             # 🎣 Hooks personalizados
+│   │   ├── /styles            # 🎨 Estilização global
+│   │   ├── /assets            # 🖼️ Imagens e recursos
+│   │   └── /utils             # 🛠 Funções utilitárias
+│   ├── package.json           # 📦 Dependências
+│   └── vite.config.js         # ⚙️ Configuração do Vite
+│
+├── /backend                   # 🖥️ API Spring Boot
+│   ├── /src/main/java
+│   │   └── /com/autofix/app
+│   │       ├── /controller    # 🎮 Endpoints REST
+│       │       ├── /service       # ⚙️ Regras de negócio
+│       │       ├── /repository    # 🗄️ Acesso ao banco (JPA)
+│       │       ├── /model         # 🧬 Entidades
+│       │       ├── /dto           # ✉️ Data Transfer Objects
+│       │       ├── /config        # 🔧 Configurações (CORS, Security, etc)
+│       │       ├── /security      # 🛡️ JWT e autenticação
+│       │       └── /exception     # 💥 Tratamento de erros
+│   │
+│   ├── /src/main/resources    # 📂 Configurações da aplicação
+│   │   ├── application.yml    # ⚙️ Config principal
+│   │   └── /db                # 💾 Scripts ou migrações (opcional)
+│   │
+│   ├── /src/test/java         # 🧪 Testes automatizados
+│   └── pom.xml                # 🛠 Build Maven
+│
+└── /scripts                  # 📜 Scripts auxiliares (opcional)
+    ├── dev.sh
+    ├── build.sh
+    └── run.sh
 ```
 
 ---

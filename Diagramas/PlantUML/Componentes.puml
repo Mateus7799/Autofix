@@ -1,24 +1,20 @@
 @startuml
 skinparam componentStyle uml2
-left to right direction
+top to bottom direction
 
 package "Frontend (React SPA)" {
-
     component [UI Components\n(Páginas e Telas)] as ui
     component [API Client\n(Axios / Services)] as client
-
     ui ..> client : utiliza
 }
 
 package "Backend API (Spring Boot)" {
-
     component [API REST\n(Controllers Layer)] as api
 
     interface "REST/HTTP JSON" as rest
     api - rest : <<provided>>
 
     package "Domínio / Módulos de Negócio" {
-
         component [Autenticação] as auth
         component [Agendamentos] as agenda
         component [Clientes e Veículos] as clientes
@@ -27,43 +23,64 @@ package "Backend API (Spring Boot)" {
         component [Estoque e Peças] as estoque
         component [Financeiro] as financeiro
 
-        api ..> auth
-        api ..> agenda
-        api ..> clientes
-        api ..> orc
-        api ..> os
-        api ..> estoque
-        api ..> financeiro
+        interface "IAuth" as iauth
+        interface "IAgenda" as iagenda
+        interface "IClientes" as iclientes
+        interface "IOrcamento" as iorc
+        interface "IOrdemServico" as ios
+        interface "IEstoque" as iestoque
+        interface "IFinanceiro" as ifinanceiro
 
-        agenda ..> clientes
-        orc ..> estoque : calcula peças
-        os ..> estoque : baixa estoque
-        financeiro ..> os : faturamento
+        auth - iauth : <<provided>>
+        agenda - iagenda : <<provided>>
+        clientes - iclientes : <<provided>>
+        orc - iorc : <<provided>>
+        os - ios : <<provided>>
+        estoque - iestoque : <<provided>>
+        financeiro - ifinanceiro : <<provided>>
+
+        api ..> iauth : <<required>>
+        api ..> iagenda : <<required>>
+        api ..> iclientes : <<required>>
+        api ..> iorc : <<required>>
+        api ..> ios : <<required>>
+        api ..> iestoque : <<required>>
+        api ..> ifinanceiro : <<required>>
+
+        agenda ..> iclientes : <<required>>
+        orc ..> iestoque : <<required>>\ncalcula peças
+        os ..> iestoque : <<required>>\nBaixa estoque
+        financeiro ..> ios : <<required>>\nfaturamento
     }
 
+    interface "IPersistencia" as ipersist
     component [Camada de Persistência] as persistencia
+    persistencia - ipersist : <<provided>>
+
+    auth ..> ipersist : <<required>>
+    agenda ..> ipersist : <<required>>
+    clientes ..> ipersist : <<required>>
+    orc ..> ipersist : <<required>>
+    os ..> ipersist : <<required>>
+    estoque ..> ipersist : <<required>>
+    financeiro ..> ipersist : <<required>>
 }
 
 package "Persistência / ORM" {
-
+    interface "IRepositorios" as irepo
     component [Repositórios] as repo
+    interface "IJPA" as ijpa
     component [JPA / Hibernate] as jpa
+
+    repo - irepo : <<provided>>
+    jpa - ijpa : <<provided>>
+    repo ..> ijpa : <<required>>
 }
 
 database "PostgreSQL DB" as db
 
-client ..> rest : HTTP/JSON
-
-auth ..> persistencia
-agenda ..> persistencia
-clientes ..> persistencia
-orc ..> persistencia
-os ..> persistencia
-estoque ..> persistencia
-financeiro ..> persistencia
-
-persistencia ..> repo
-repo ..> jpa
+client ..> rest : <<required>>\nHTTP/JSON
+persistencia ..> irepo : <<required>>
 jpa ..> db : JDBC
 
 @enduml
